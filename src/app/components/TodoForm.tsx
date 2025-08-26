@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import useTodoStore from "../stores/todo-store";
 import DialogueBox from "./Dialaogue-box";
+import { AnimatePresence } from "motion/react";
 
 const TodoForm = () => {
   const addTodo = useTodoStore((state) => state.addTodo);
@@ -21,7 +22,10 @@ const TodoForm = () => {
           >
             add task
           </button>
-          {isFormOpen && <DialogueBox />}
+
+          {/* AnimatePresence for exiting animation must be used in conditional rendered children */}
+          <AnimatePresence>{isFormOpen && <DialogueBox />}</AnimatePresence>
+
           <button className="rounded-2xl bg-gray-600 px-6 py-2 cursor-pointer hover:scale-108 transition-all">
             All
           </button>
