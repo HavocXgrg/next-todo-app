@@ -11,23 +11,19 @@ const DialogueBox = () => {
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!todo) return alert("Add the Todo Please!!!");
-
-    addTodo({
-      id: Date.now(),
-      text: todo,
-      completed: status === "complete", //this returns boolean === assignment helps to return boolean
-    });
-
+    const trimmedTodo = todo.trim();
+    if (!trimmedTodo) return;
+    addTodo(trimmedTodo, status === "complete"); //this === assignment helps to return boolean
     setTodo("");
   };
+
   return (
-    <>
+    <div className="fixed inset-0 bg-black/50 z-1000">
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
-        className="container h-[24rem] w-[26rem] fixed top-54 left-[35rem] bg-[#070622] p-8 z-100"
+        className="container h-[24rem] w-[26rem] fixed top-54 left-[35rem] bg-[#312f57] p-8 z-100"
       >
         <button
           className="crossBox bg-red-800 w-6 h-6 absolute flex justify-center left-[92%] top-2 cursor-pointer hover:scale-116 "
@@ -36,17 +32,18 @@ const DialogueBox = () => {
           X
         </button>
         <form>
-          <label className="flex flex-col gap-4">
+          <label className="flex flex-col gap-4 font-bold">
             Title:
             <input
               type="text"
-              className="bg-gray-400 h-10 text-black p-4 mb-6 capitalize"
+              autoFocus
+              className="bg-slate-800 h-10 text-gray-300 font-light p-4 mb-6 capitalize tracking-wide outline-none"
               value={todo}
               onChange={(e) => setTodo(e.target.value)}
             />
             Status:
             <select
-              className="bg-gray-400  text-black p-4"
+              className="bg-slate-800 font-light text-gray-200 p-4"
               value={status}
               onChange={(e) =>
                 setStatus(e.target.value as "complete" | "incomplete")
@@ -57,9 +54,9 @@ const DialogueBox = () => {
             </select>
           </label>
 
-          <div className="btn flex gap-8 mt-14 ">
+          <div className="btn flex gap-8 mt-18 ">
             <button
-              className="bg-green-500 p-2 px-4 text-black rounded-sm cursor-pointer hover:scale-110 transition-all"
+              className="bg-green-700 p-2 px-4 text-white rounded-sm cursor-pointer hover:scale-110 transition-all"
               onClick={handleAdd}
             >
               Add Task
@@ -67,7 +64,7 @@ const DialogueBox = () => {
 
             <button
               type="button"
-              className="bg-red-500 p-2 px-4 rounded-sm cursor-pointer hover:scale-110 transition-all"
+              className="bg-red-800 p-2 px-4 rounded-sm cursor-pointer hover:scale-110 transition-all"
               onClick={closeForm}
             >
               Cancel
@@ -75,7 +72,7 @@ const DialogueBox = () => {
           </div>
         </form>
       </motion.div>
-    </>
+    </div>
   );
 };
 
