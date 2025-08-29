@@ -9,41 +9,51 @@ export type Todo = {
 };
 
 // for the entire state of a to-do app
-type TodoStoreState = {
+export type TodoStoreState = {
   todos: Todo[];
   isFormOpen: boolean;
+  filtered: "all" | "complete" | "incomplete";
   openForm: () => void;
   closeForm: () => void;
-  addTodo: (todo: Todo) => void;
+  addTodo: (text: string, completed: boolean) => void;
   updateTodo: (todoId: number, newText: string) => void;
   removeTodo: (todoId: number) => void;
   toggleTodoStatus: (todoId: number) => void;
+  filterSetter: (filtered: "all" | "complete" | "incomplete") => void;
 };
 
 const useTodoStore = create<TodoStoreState>()(
   devtools(
     persist(
-      (set, get) => ({
+      (set) => ({
         //initial state of the todos
         todos: [],
         isFormOpen: false,
+        filtered: "all",
 
         //actions for form open and close
         openForm: () => set({ isFormOpen: true }),
         closeForm: () => set({ isFormOpen: false }),
 
         //action for adding new todo
-        addTodo: (todo) => {
+        addTodo: (text, completed) => {
+          const trimmedText = text.trim();
+          if (!trimmedText) return;
           set((state) => ({
-            todos: [todo, ...state.todos],
+            todos: [
+              { id: Date.now(), text: trimmedText, completed },
+              ...state.todos,
+            ],
             isFormOpen: false,
           }));
         },
 
         updateTodo: (todoId, newText) => {
+          const trimmedText = newText.trim();
+          if (!trimmedText) return; // Prevent empty updates
           set((state) => ({
             todos: state.todos.map((todo) =>
-              todo.id === todoId ? { ...todo, text: newText } : todo
+              todo.id === todoId ? { ...todo, text: trimmedText } : todo
             ),
           }));
         },
@@ -65,6 +75,8 @@ const useTodoStore = create<TodoStoreState>()(
             ),
           }));
         },
+
+        filterSetter: (filtered) => set({ filtered }),
       }),
       {
         name: "Todo list", // name of the item in local sorage, see in devTools
